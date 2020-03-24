@@ -1,0 +1,15 @@
+CREATE TABLE "vocable_list" (
+	"german" TEXT,
+	"english" TEXT,
+	"french" TEXT,
+	"espanol" TEXT
+);
+
+
+CREATE TABLE "learning_value" (
+	"vocable_id" INTEGER UNIQUE,
+	"german_french"	INTEGER,
+	"english_french" INTEGER,
+	"english_german" INTEGER,
+	FOREIGN KEY("vocable_id") REFERENCES "vocable_list"("rowid")
+);
