@@ -48,7 +48,7 @@ public class ComDatabase {
     }
 
     public static void createTables() {
-        executeSQL("CREATE TABLE IF NOT EXISTS vocable_list (german TEXT, english TEXT, french TEXT, spanish TEXT);");
-        executeSQL("CREATE TABLE IF NOT EXISTS learning_value (vocable_id INTEGER);");
+        executeSQL("CREATE TABLE IF NOT EXISTS t_vocable_list (german TEXT, english TEXT, french TEXT, spanish TEXT);");
+        executeSQL("CREATE TABLE IF NOT EXISTS t_learning_value (vocable_id INTEGER);");
     }
 }
