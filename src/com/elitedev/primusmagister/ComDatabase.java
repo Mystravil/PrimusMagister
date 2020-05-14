@@ -234,6 +234,32 @@ public class ComDatabase {
         }
     }
 
+    public static ResultSet getPairList(String language1, String language2) {
+        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + ";";
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(rs);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public static ResultSet getPair(String language1, String language2, int vocableID1, int vocableID2) {
+        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = " + vocableID1 + " AND vocableID2 = " + vocableID2 + ";";
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(rs);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Adds a vocable pair
      *
