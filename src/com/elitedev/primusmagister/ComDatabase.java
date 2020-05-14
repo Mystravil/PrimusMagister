@@ -123,6 +123,19 @@ public class ComDatabase {
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_" + language1 + "_" + language2 + ";");
     }
 
+    public static ResultSet getVocableID(String language, String vocable) {
+        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE vocable = " + vocable + ";";
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(rs);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Adds a vocable
      *
