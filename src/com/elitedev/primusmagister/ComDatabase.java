@@ -1,6 +1,5 @@
 package com.elitedev.primusmagister;
 
-import java.io.File;
 import java.sql.*;
 
 
@@ -147,17 +146,17 @@ public class ComDatabase {
      * Updates a vocable
      *
      * @param language   the language of vocable
-     * @param vocableID  the rowid of the vocable
+     * @param vocable  the vocable
      * @param newVocable the new string for the vocable
      */
-    public static void updateVocable(String language, int vocableID, String newVocable) {
+    public static void updateVocable(String language, String vocable, String newVocable) {
         language = language.toLowerCase();
 
         String sql = "UPDATE t_dictionary_" + language + " SET vocable = ? WHERE rowid = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, newVocable);
-            pstmt.setInt(1, vocableID);
+            pstmt.setString(1, vocable);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -168,15 +167,15 @@ public class ComDatabase {
      * Deletes a vocable
      *
      * @param language  the language of vocable
-     * @param vocableID the rowid of the vocable
+     * @param vocable the vocable
      */
-    public static void deleteVocable(String language, int vocableID) {
+    public static void deleteVocable(String language, String vocable) {
         language = language.toLowerCase();
 
         String sql = "DELETE FROM t_dictionary_" + language + " WHERE rowid = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, vocableID);
+            pstmt.setString(1, vocable);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -186,8 +185,8 @@ public class ComDatabase {
     /**
      * Adds a vocable pair
      *
-     * @param language1 the first language of the pair
-     * @param language2 the second language of the pair
+     * @param language1  the first language of the pair
+     * @param language2  the second language of the pair
      * @param vocableID1 the first vocable rowid of the pair
      * @param vocableID2 the second vocable rowid of the pair
      */
@@ -211,7 +210,7 @@ public class ComDatabase {
      *
      * @param language1 the first language of the pair
      * @param language2 the second language of the pair
-     * @param pairID the rowid of the pair
+     * @param pairID    the rowid of the pair
      */
     public static void deletePair(String language1, String language2, int pairID) {
         language1 = language1.toLowerCase();
