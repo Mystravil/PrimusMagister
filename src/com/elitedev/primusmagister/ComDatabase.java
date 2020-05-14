@@ -80,6 +80,19 @@ public class ComDatabase {
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_german_english;");
     }
 
+    public static ResultSet getLanguages() {
+        String sql = "SELECT name FROM sqlite_master WHERE name LIKE 't_dictionary_%' AND type = table;";
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(rs);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Creates a dictionary table
      *
