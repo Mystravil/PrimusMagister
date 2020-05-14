@@ -136,6 +136,20 @@ public class ComDatabase {
         return null;
     }
 
+    public static ResultSet getVocableList(String language) {
+        String sql = "SELECT * FROM t_dictionary_" + language + ";";
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(rs);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+
     /**
      * Adds a vocable
      *
