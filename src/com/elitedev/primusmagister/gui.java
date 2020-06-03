@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.AbstractListModel;
 import javax.swing.JProgressBar;
 import javax.swing.ListSelectionModel;
@@ -97,15 +98,17 @@ public class gui extends JFrame {
 		String[] languageArray = { "Test" };
 
 		ResultSet rs = ComDatabase.getLanguages();
-		while (rs.next()) {
-			System.out.println("Autor = " + rs.getString("author"));
-			System.out.println("Titel = " + rs.getString("title"));
-			System.out.println("Erscheinungsdatum = "
-					+ rs.getDate("publication"));
-			System.out.println("Seiten = " + rs.getInt("pages"));
-			System.out.println("Preis = " + rs.getDouble("price"));
-		}
-		rs.close();
+
+//		try {
+//			while (rs.next()) {
+//				System.out.println(rs.getString(0));
+//			}
+//			System.out.println(rs);
+//
+//			rs.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 
 		//-------------------------------------------------------------------------------
 		// configuration of the gui itself
