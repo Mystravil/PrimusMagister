@@ -2,7 +2,6 @@ package com.elitedev.primusmagister;
 
 import java.sql.*;
 
-
 public class ComDatabase {
     static Connection conn = null;
 
