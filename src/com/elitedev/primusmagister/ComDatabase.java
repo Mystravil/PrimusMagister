@@ -86,12 +86,13 @@ public class ComDatabase {
     }
 
     public static ResultSet getLanguages() {
-        String sql = "SELECT name FROM sqlite_master WHERE name LIKE 't_dictionary_%' AND type = table;";
+        String sql = "SELECT name FROM sqlite_master WHERE name LIKE 't_dictionary_%' AND type = 'table';";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
             return rs;
         } catch (Exception e) {
+            System.out.println("EXCEPTION CAUGHT");
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
@@ -142,7 +143,7 @@ public class ComDatabase {
     }
 
     public static ResultSet getVocableID(String language, String vocable) {
-        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE vocable = " + vocable + ";";
+        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE vocable = \"" + vocable + "\";";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
@@ -155,7 +156,7 @@ public class ComDatabase {
     }
 
     public static ResultSet getVocable(String language, int vocableID) {
-        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE rowid = " + vocableID + ";";
+        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE rowid = \"" + vocableID + "\";";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
@@ -168,7 +169,7 @@ public class ComDatabase {
     }
 
     public static ResultSet getVocableList(String language) {
-        String sql = "SELECT * FROM t_dictionary_" + language + ";";
+        String sql = "SELECT * FROM t_dictionary_\"" + language + "\";";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
@@ -253,7 +254,7 @@ public class ComDatabase {
     }
 
     public static ResultSet getPair(String language1, String language2, int vocableID1, int vocableID2) {
-        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = " + vocableID1 + " AND vocableID2 = " + vocableID2 + ";";
+        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = \"" + vocableID1 + "\" AND vocableID2 = \"" + vocableID2 + "\";";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
