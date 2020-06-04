@@ -100,7 +100,7 @@ public class ComDatabase {
     public static void createDictionaryTable(String language) {
         language = language.toLowerCase();
 
-        executeSQL("CREATE TABLE IF NOT EXISTS t_dictionary_" + language + " (vocable TEXT);");
+        executeSQL("CREATE TABLE IF NOT EXISTS t_dictionary_" + language + " (vocable TEXT UNIQUE);");
     }
 
     /**
