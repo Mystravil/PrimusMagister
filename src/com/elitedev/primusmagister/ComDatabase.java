@@ -6,15 +6,20 @@ public class ComDatabase {
     static Connection conn = null;
 
     public static void main(String[] args) {
-        connectToDatabase("primusmagister.db");
+        conn = connectToDatabase("primusmagister.db");
+        createDefaultData();
+        ResultSet voc = getVocableID("german", "Baum");
+        ResultSet langs = getLanguages();
+        System.out.println("test");
     }
 
     /**
      * Connect to SQLite3 .db file, creates it if it does not exist
      *
      * @param fileName Filename of the .db file
+     * @return conn
      */
-    public static void connectToDatabase(String fileName) {
+    public static Connection connectToDatabase(String fileName) {
         String url = "jdbc:sqlite:" + fileName;
         System.out.println(url);
 
@@ -24,17 +29,18 @@ public class ComDatabase {
             e.printStackTrace();
         }
 
-        try (Connection connection = DriverManager.getConnection(url)) {
-            conn = connection;
+        try {
+            conn = DriverManager.getConnection(url);
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
-                createDefaultData();
+                return conn;
             }
         } catch (Exception e) {
             System.out.println("ERROR");
             System.out.println(e.getMessage());
         }
+        return null;
     }
 
     /**
