@@ -95,7 +95,7 @@ public class gui extends JFrame {
 	public gui() {
 		
 		//languagelist for spinner
-		String[] languageArray = { "Test" };
+		String[] languageArray = { "Test", "Test2" };
 
 		ResultSet rs = ComDatabase.getLanguages();
 
@@ -140,6 +140,9 @@ public class gui extends JFrame {
 					changeHeaderText();
 					// TODO main programm 
 					// TODO fill label srcWord
+					ComViewModel.setSourceVoc(spinnerLanguageLeft.getValue().toString());
+					ComViewModel.setSourceVoc(spinnerLanguageRight.getValue().toString());
+
 				}
 			}
 		});

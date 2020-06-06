@@ -1,6 +1,7 @@
 package com.elitedev.primusmagister;
 
 import java.sql.*;
+import java.util.List;
 
 public class ComConfig {
     private ComDatabase _comDatabase = new ComDatabase();
@@ -23,7 +24,7 @@ public class ComConfig {
     }
 
     // --- Vocable Config ---
-    public ResultSet constructVocables(String language) {
+    public List<Vocable> constructVocables(String language) {
         return _comDatabase.getVocableList(language);
     }
 
