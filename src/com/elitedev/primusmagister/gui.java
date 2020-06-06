@@ -97,7 +97,7 @@ public class gui extends JFrame {
 		//languagelist for spinner
 		String[] languageArray = { "Test", "Test2" };
 
-		ResultSet rs = ComDatabase.getLanguages();
+//		ResultSet rs = ComDatabase.getLanguages();
 
 //		try {
 //			while (rs.next()) {

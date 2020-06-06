@@ -15,6 +15,7 @@ public class ComDatabase {
         Vocable voc = getVocable("german", 1);
         List<VocablePair> vocpairs = getPairList("german", "english");
         System.out.println("test");
+        List<String> test = getLanguages();
     }
 
     /**
@@ -89,17 +90,19 @@ public class ComDatabase {
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_german_english;");
     }
 
-    public static List<Vocable> getLanguages() {
-
-
+    public static List<String> getLanguages() {
         String sql = "SELECT name FROM sqlite_master WHERE name LIKE 't_dictionary_%' AND type = 'table';";
+        List<String> languages = new ArrayList<>();
+
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
 
-
-            return null;
+            while (rs.next()) {
+                languages.add(rs.getString("name").substring(13));
+            }
+            rs.close();
+            return languages;
         } catch (Exception e) {
-            System.out.println("EXCEPTION CAUGHT");
             e.printStackTrace();
             System.out.println(e.getMessage());
             return null;
