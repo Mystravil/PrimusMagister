@@ -1,6 +1,10 @@
 package com.elitedev.primusmagister;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.elitedev.primusmagister.Vocable;
 
 public class ComDatabase {
     static Connection conn = null;
@@ -8,8 +12,8 @@ public class ComDatabase {
     public static void main(String[] args) {
         conn = connectToDatabase("primusmagister.db");
         createDefaultData();
-        ResultSet voc = getVocableID("german", "Baum");
-        ResultSet langs = getLanguages();
+        List<Vocable> vocables = getVocableList("german");
+        // ResultSet langs = getLanguages();
         System.out.println("test");
     }
 
@@ -168,12 +172,21 @@ public class ComDatabase {
         return null;
     }
 
-    public static ResultSet getVocableList(String language) {
-        String sql = "SELECT * FROM t_dictionary_\"" + language + "\";";
+    public static List<Vocable> getVocableList(String language) {
+        List<Vocable> vocables = new ArrayList<>();
+        String sql = "SELECT rowid, vocable FROM t_dictionary_" + language + ";";
+
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
-            return rs;
+
+            while (rs.next()) {
+                Vocable vocable = new Vocable();
+                vocable.id = rs.getInt("rowid");
+                vocable.name = rs.getString("vocable");
+                vocables.add(vocable);
+            }
+
+            return vocables;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
