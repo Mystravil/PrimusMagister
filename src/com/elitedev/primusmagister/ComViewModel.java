@@ -1,7 +1,9 @@
 package com.elitedev.primusmagister;
 
+import java.util.List;
+
 public class ComViewModel {
-    private static String sourceVoc;
+    private static String sourceVoc = "aaaaaa";
     public static String getSourceVoc() { return sourceVoc; }
     public static void setSourceVoc(String newSourceVoc) { sourceVoc = newSourceVoc; }
 
