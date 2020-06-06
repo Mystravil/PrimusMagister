@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.elitedev.primusmagister.Vocable;
 
 public class ComDatabase {
     static Connection conn = null;
@@ -13,7 +12,7 @@ public class ComDatabase {
         conn = connectToDatabase("primusmagister.db");
         createDefaultData();
         List<Vocable> vocables = getVocableList("german");
-        // ResultSet langs = getLanguages();
+        Vocable voc = getVocable("german", 1);
         System.out.println("test");
     }
 
@@ -111,7 +110,7 @@ public class ComDatabase {
     public static void createDictionaryTable(String language) {
         language = language.toLowerCase();
 
-        executeSQL("CREATE TABLE IF NOT EXISTS t_dictionary_" + language + " (vocable TEXT UNIQUE);");
+        executeSQL("CREATE TABLE IF NOT EXISTS t_dictionary_" + language + " (name TEXT UNIQUE);");
     }
 
     /**
@@ -146,43 +145,17 @@ public class ComDatabase {
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_" + language1 + "_" + language2 + ";");
     }
 
-    public static ResultSet getVocableID(String language, String vocable) {
-        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE vocable = \"" + vocable + "\";";
-        try (Statement statement = conn.createStatement()) {
-            ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
-            return rs;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    public static ResultSet getVocable(String language, int vocableID) {
-        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE rowid = \"" + vocableID + "\";";
-        try (Statement statement = conn.createStatement()) {
-            ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
-            return rs;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    public static List<Vocable> getVocableList(String language) {
+   /* public static List<Vocable> getVocableID(String language, String name) {
         List<Vocable> vocables = new ArrayList<>();
-        String sql = "SELECT rowid, vocable FROM t_dictionary_" + language + ";";
 
+        String sql = "SELECT rowid FROM t_dictionary_" + language + " WHERE vocable = '" + name + "';";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next()) {
                 Vocable vocable = new Vocable();
                 vocable.id = rs.getInt("rowid");
-                vocable.name = rs.getString("vocable");
+                // vocable.name = rs.getString("name");
                 vocables.add(vocable);
             }
 
@@ -190,6 +163,50 @@ public class ComDatabase {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
+        }
+        return null;
+    }*/
+
+    public static Vocable getVocable(String language, int vocableID) {
+        String sql = "SELECT rowid, name FROM t_dictionary_" + language + " WHERE rowid = '" + vocableID + "';";
+
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            Vocable vocable = new Vocable();
+            while (rs.next()) {
+                vocable.id = rs.getInt("rowid");
+                vocable.name = rs.getString("name");
+            }
+
+            rs.close();
+            return vocable;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static List<Vocable> getVocableList(String language) {
+        List<Vocable> vocables = new ArrayList<>();
+        String sql = "SELECT rowid, name FROM t_dictionary_" + language + ";";
+
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+
+            while (rs.next()) {
+                Vocable vocable = new Vocable();
+                vocable.id = rs.getInt("rowid");
+                vocable.name = rs.getString("name");
+                vocables.add(vocable);
+            }
+
+            rs.close();
+            return vocables;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return null;
         }
         return null;
     }
@@ -267,7 +284,7 @@ public class ComDatabase {
     }
 
     public static ResultSet getPair(String language1, String language2, int vocableID1, int vocableID2) {
-        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = \"" + vocableID1 + "\" AND vocableID2 = \"" + vocableID2 + "\";";
+        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = '" + vocableID1 + "' AND vocableID2 = '" + vocableID2 + "';";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
