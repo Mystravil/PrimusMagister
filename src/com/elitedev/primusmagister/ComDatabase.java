@@ -13,6 +13,7 @@ public class ComDatabase {
         createDefaultData();
         List<Vocable> vocables = getVocableList("german");
         Vocable voc = getVocable("german", 1);
+        List<VocablePair> vocpairs = getPairList("german", "english");
         System.out.println("test");
     }
 
@@ -272,12 +273,26 @@ public class ComDatabase {
         }
     }
 
-    public static ResultSet getPairList(String language1, String language2) {
+    public static List<VocablePair> getPairList(String language1, String language2) {
+        List<VocablePair> vocablepairs = new ArrayList<>();
         String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + ";";
+
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
-            return rs;
+
+            while (rs.next()) {
+                VocablePair vocablepair = new VocablePair();
+                vocablepair.language1 = language1;
+                vocablepair.language2 = language2;
+                vocablepair.vocId1 = rs.getInt("vocableID1");
+                vocablepair.vocId2 = rs.getInt("vocableID2");
+                vocablepair.voc1 = getVocable(vocablepair.language1, vocablepair.vocId1);
+                vocablepair.voc2 = getVocable(vocablepair.language2, vocablepair.vocId2);
+                vocablepairs.add(vocablepair);
+            }
+
+            rs.close();
+            return vocablepairs;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
