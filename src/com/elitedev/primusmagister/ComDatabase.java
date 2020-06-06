@@ -88,18 +88,21 @@ public class ComDatabase {
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_german_english;");
     }
 
-    public static ResultSet getLanguages() {
+    public static List<Vocable> getLanguages() {
+
+
         String sql = "SELECT name FROM sqlite_master WHERE name LIKE 't_dictionary_%' AND type = 'table';";
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
-            return rs;
+
+
+            return null;
         } catch (Exception e) {
             System.out.println("EXCEPTION CAUGHT");
             e.printStackTrace();
             System.out.println(e.getMessage());
+            return null;
         }
-        return null;
     }
 
     /**
@@ -208,7 +211,6 @@ public class ComDatabase {
             System.out.println(e.getMessage());
             return null;
         }
-        return null;
     }
 
     /**
@@ -234,7 +236,7 @@ public class ComDatabase {
      * Updates a vocable
      *
      * @param language   the language of vocable
-     * @param vocable  the vocable
+     * @param vocable    the vocable
      * @param newVocable the new string for the vocable
      */
     public static void updateVocable(String language, String vocable, String newVocable) {
@@ -254,8 +256,8 @@ public class ComDatabase {
     /**
      * Deletes a vocable
      *
-     * @param language  the language of vocable
-     * @param vocable the vocable
+     * @param language the language of vocable
+     * @param vocable  the vocable
      */
     public static void deleteVocable(String language, String vocable) {
         language = language.toLowerCase();
