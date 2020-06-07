@@ -139,7 +139,7 @@ public class ComDatabase {
         language1 = language1.toLowerCase();
         language2 = language2.toLowerCase();
 
-        executeSQL("CREATE TABLE IF NOT EXISTS t_vocable_pairs_" + language1 + "_" + language2 + " (vocableID1 INTEGER, vocableID2 INTEGER);");
+        executeSQL("CREATE TABLE IF NOT EXISTS t_vocable_pairs_" + language1 + "_" + language2 + " (vocableID1 INTEGER, vocableID2 INTEGER, skill_value INTEGER DEFAULT 0);");
     }
 
     /**
@@ -303,12 +303,21 @@ public class ComDatabase {
         return null;
     }
 
-    public static ResultSet getPair(String language1, String language2, int vocableID1, int vocableID2) {
+    public static VocablePair getPair(String language1, String language2, int vocableID1, int vocableID2) {
+        VocablePair vocablepair = new VocablePair();
         String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = '" + vocableID1 + "' AND vocableID2 = '" + vocableID2 + "';";
+
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
-            return rs;
+            while (rs.next()) {
+                vocablepair.language1 = language1;
+                vocablepair.language2 = language2;
+                vocablepair.vocId1 = rs.getInt("vocableID1");
+                vocablepair.vocId2 = rs.getInt("vocableID2");
+                vocablepair.voc1 = getVocable(vocablepair.language1, vocablepair.vocId1);
+                vocablepair.voc2 = getVocable(vocablepair.language2, vocablepair.vocId2);
+            }
+            return vocablepair;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
