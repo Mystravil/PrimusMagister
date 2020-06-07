@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JProgressBar;
 import javax.swing.ListSelectionModel;
@@ -95,20 +96,10 @@ public class gui extends JFrame {
 	public gui() {
 		
 		//languagelist for spinner
-		String[] languageArray = { "Test", "Test2" };
-
-//		ResultSet rs = ComDatabase.getLanguages();
-
-//		try {
-//			while (rs.next()) {
-//				System.out.println(rs.getString(0));
-//			}
-//			System.out.println(rs);
-//
-//			rs.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+		String[] languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+//		String[] languageArray = { "Test", "Test2"};
+//		List<String> test = ComDatabase.getLanguages();
+//		Vocable voc = ComDatabase.getVocable("german", 1);
 
 		//-------------------------------------------------------------------------------
 		// configuration of the gui itself

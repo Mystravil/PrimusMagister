@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class ComDatabase {
-    static Connection conn = null;
+    static Connection conn = connectToDatabase("primusmagister.db");
 
     public static void main(String[] args) {
         conn = connectToDatabase("primusmagister.db");
@@ -90,9 +90,9 @@ public class ComDatabase {
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_german_english;");
     }
 
-    public static List<String> getLanguages() {
+    public static ArrayList<String> getLanguages() {
         String sql = "SELECT name FROM sqlite_master WHERE name LIKE 't_dictionary_%' AND type = 'table';";
-        List<String> languages = new ArrayList<>();
+        ArrayList<String> languages = new ArrayList<>();
 
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
