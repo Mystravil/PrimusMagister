@@ -338,11 +338,12 @@ public class ComDatabase {
         language1 = language1.toLowerCase();
         language2 = language2.toLowerCase();
 
-        String sql = "INSERT INTO t_vocable_pairs_" + language1 + "_" + language2 + " VALUES(?,?)";
+        String sql = "INSERT INTO t_vocable_pairs_" + language1 + "_" + language2 + " VALUES(?,?,?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, vocableID1);
             pstmt.setInt(2, vocableID2);
+            pstmt.setInt(3, 0);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
