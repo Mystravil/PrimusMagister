@@ -279,7 +279,7 @@ public class ComDatabase {
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, newVocable);
-            pstmt.setString(1, vocable);
+            pstmt.setString(2, vocable);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -440,5 +440,18 @@ public class ComDatabase {
             System.out.println(e.getMessage());
         }
         return 0;
+    }
+
+    public static void updateSkillvalue(String language1, String language2, int vocablePairID, int newSkillValue) {
+
+        String sql = "UPDATE t_vocable_pairs_" + language1 + "_" + language2 + " SET skill_value = ? WHERE rowid = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, newSkillValue);
+            pstmt.setInt(2, vocablePairID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
