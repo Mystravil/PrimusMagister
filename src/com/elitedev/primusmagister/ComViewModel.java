@@ -3,7 +3,7 @@ package com.elitedev.primusmagister;
 import java.util.List;
 
 public class ComViewModel {
-    private static String sourceVoc = "aaaaaa";
+    private static String sourceVoc;
     public static String getSourceVoc() { return sourceVoc; }
     public static void setSourceVoc(String newSourceVoc) { sourceVoc = newSourceVoc; }
 
