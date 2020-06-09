@@ -1,23 +1,14 @@
 package com.elitedev.primusmagister;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
 
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -26,9 +17,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 import javax.swing.JProgressBar;
 import javax.swing.ListSelectionModel;
@@ -73,6 +62,7 @@ public class gui extends JFrame {
 	private JTable table;
 
 	private ComConfig _comConfig = new ComConfig();
+	public String[] languageArray = ComDatabase.getLanguages().toArray(new String[0]);
 
 	/**
 	 * Launch the application.
@@ -96,7 +86,6 @@ public class gui extends JFrame {
 	public gui() {
 		
 		//languagelist for spinner
-		String[] languageArray = ComDatabase.getLanguages().toArray(new String[0]);
 //		String[] languageArray = { "Test", "Test2"};
 //		List<String> test = ComDatabase.getLanguages();
 //		Vocable voc = ComDatabase.getVocable("german", 1);
@@ -133,6 +122,13 @@ public class gui extends JFrame {
 					// TODO fill label srcWord
 					ComViewModel.setSourceVoc(spinnerLanguageLeft.getValue().toString());
 					ComViewModel.setSourceVoc(spinnerLanguageRight.getValue().toString());
+
+					// Progressbar calculation
+//					progressBar.setMaximum(100);
+//					progressBar.setMinimum(0);
+//					progressBar.setValue();
+
+					// new Voc
 
 				}
 			}
@@ -553,6 +549,15 @@ public class gui extends JFrame {
 		switch (menu_) {
 		case "configLanguage":
 			input = JOptionPane.showInputDialog(null, "Geben Sie eine Sprache ein", "Spracheingabe", JOptionPane.PLAIN_MESSAGE);
+			if (JOptionPane.OK_OPTION == 0) {
+				ArrayList<String> existingLang = ComDatabase.getLanguages();
+				if (existingLang.contains(input.toLowerCase())) {
+					JOptionPane.showMessageDialog(null, "Dieser Eintrag existiert bereits");
+				}
+				ComDatabase.createDictionaryTable(input.toLowerCase());
+				languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+				fullUpdateLanguages();
+			}
         break;
 		
 		case "configVocable":
@@ -607,7 +612,12 @@ public class gui extends JFrame {
 		case "configLanguage":
 			if (listLanguage.getSelectedValue() != null) {
 				selected = (String) listLanguage.getSelectedValue();
-				input = JOptionPane.showOptionDialog(null, "M�chten Sie die Sprache '" + selected +"' wirklich l�schen?", "Sprache l�schen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+				input = JOptionPane.showOptionDialog(null, "M�chten Sie die Sprache '" + selected + "' wirklich l�schen?", "Sprache l�schen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+				if (input == 0) {
+					ComDatabase.deleteDictionaryTable(selected);
+					languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+					fullUpdateLanguages();
+				}
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Keine Sprache ausgew�hlt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
@@ -667,6 +677,21 @@ public class gui extends JFrame {
 				}
 				break;
 			}	
+	}
+
+	public void fullUpdateLanguages() {
+		spinnerLanguageLeft.setModel(new SpinnerListModel(languageArray));
+		spinnerLanguageRight.setModel(new SpinnerListModel(languageArray));
+		spinnerLanguage.setModel(new SpinnerListModel(languageArray));
+		listLanguage.setModel(new AbstractListModel() {
+			String[] values = languageArray;
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
 	}
 	
 	//------------------------------------------------------------------------------------------------------------------------------------------------
