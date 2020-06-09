@@ -74,11 +74,39 @@ public class ComDatabase {
         addVocable("german", "Baum");
         addVocable("german", "Auto");
         addVocable("german", "Straße");
+        addVocable("german", "sitzen");
+        addVocable("german", "wunderbar");
+        addVocable("german", "schmeissen");
+        addVocable("german", "bezahlen");
+        addVocable("german", "landen");
+        addVocable("german", "tanzen");
+        addVocable("german", "nackt");
+        addVocable("german", "heben");
+        addVocable("german", "größte");
+        addVocable("german", "das Geräusch");
+        addVocable("german", "entfernen");
+        addVocable("german", "aufstehen");
+
         addVocable("english", "street");
         addVocable("english", "car");
         addVocable("english", "tree");
+        addVocable("english", "to sit");
+        addVocable("english", "wonderful");
+        addVocable("english", "to throw");
+        addVocable("english", "to pay");
+        addVocable("english", "to land");
+        addVocable("english", "to dance");
+        addVocable("english", "naked");
+        addVocable("english", "to lift");
+        addVocable("english", "greatest");
+        addVocable("english", "the noise");
+        addVocable("english", "to remove");
+        addVocable("english", "to stand up");
         addPair("german", "english", 1, 3);
         addPair("german", "english", 2, 2);
+        for (int i = 4; i < 16; i++) {
+            addPair("german", "english", i, i);
+        }
     }
 
     /**
