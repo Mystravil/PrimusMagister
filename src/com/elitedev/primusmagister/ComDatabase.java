@@ -14,7 +14,7 @@ public class ComDatabase {
         List<Vocable> vocables = getVocableList("german");
         Vocable voc = getVocable("german", 1);
         List<VocablePair> vocpairs = getPairList("german", "english");
-        VocablePair ranpair = getPairRandomLowestSkill("german", "english");
+        int skillval = getTotalSkillValue("german", "english");
         System.out.println("test");
         List<String> test = getLanguages();
     }
@@ -423,5 +423,22 @@ public class ComDatabase {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public static int getTotalSkillValue(String language1, String language2) {
+        int totalSkillValue = 0;
+        String sql = "SELECT sum(skill_value) FROM t_vocable_pairs_" + language1 + "_" + language2 + ";";
+
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                totalSkillValue = rs.getInt(1);
+            }
+            return totalSkillValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return 0;
     }
 }
