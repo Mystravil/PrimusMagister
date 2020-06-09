@@ -14,6 +14,7 @@ public class ComDatabase {
         List<Vocable> vocables = getVocableList("german");
         Vocable voc = getVocable("german", 1);
         List<VocablePair> vocpairs = getPairList("german", "english");
+        VocablePair ranpair = getPairRandomLowestSkill("german", "english");
         System.out.println("test");
         List<String> test = getLanguages();
     }
@@ -333,11 +334,12 @@ public class ComDatabase {
 
     public static VocablePair getPair(String language1, String language2, int vocableID1, int vocableID2) {
         VocablePair vocablepair = new VocablePair();
-        String sql = "SELECT * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = '" + vocableID1 + "' AND vocableID2 = '" + vocableID2 + "';";
+        String sql = "SELECT rowid, * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE vocableID1 = '" + vocableID1 + "' AND vocableID2 = '" + vocableID2 + "';";
 
         try (Statement statement = conn.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             while (rs.next()) {
+                vocablepair.id = rs.getInt("rowid");
                 vocablepair.language1 = language1;
                 vocablepair.language2 = language2;
                 vocablepair.vocId1 = rs.getInt("vocableID1");
@@ -397,5 +399,29 @@ public class ComDatabase {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static VocablePair getPairRandomLowestSkill(String language1, String language2) {
+        VocablePair vocablepair = new VocablePair();
+        String sql = "SELECT rowid, * FROM t_vocable_pairs_" + language1 + "_" + language2 + " WHERE skill_value = (SELECT min(skill_value) FROM t_vocable_pairs_" + language1 + "_" + language2 + ") ORDER BY RANDOM() LIMIT 1;";
+
+        try (Statement statement = conn.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                vocablepair.id = rs.getInt("rowid");
+                vocablepair.language1 = language1;
+                vocablepair.language2 = language2;
+                vocablepair.vocId1 = rs.getInt("vocableID1");
+                vocablepair.vocId2 = rs.getInt("vocableID2");
+                vocablepair.voc1 = getVocable(vocablepair.language1, vocablepair.vocId1);
+                vocablepair.voc2 = getVocable(vocablepair.language2, vocablepair.vocId2);
+                vocablepair.skill_value = rs.getInt("skill_value");
+            }
+            return vocablepair;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }
