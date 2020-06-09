@@ -1,15 +1,13 @@
 package com.elitedev.primusmagister;
 
-import java.util.List;
-
 public class ComViewModel {
-    private static String sourceVoc;
-    public static String getSourceVoc() { return sourceVoc; }
-    public static void setSourceVoc(String newSourceVoc) { sourceVoc = newSourceVoc; }
+    private static String sourceLang;
+    public static String getSourceLang() { return sourceLang; }
+    public static void setSourceLang(String newSourceVoc) { sourceLang = newSourceVoc; }
 
-    private static String targetVoc;
-    public static String getTargetVoc() { return targetVoc; }
-    public static void setTargetVoc(String newTargetVoc) { targetVoc = newTargetVoc; }
+    private static String targetLang;
+    public static String getTargetLang() { return targetLang; }
+    public static void setTargetLang(String newTargetVoc) { targetLang = newTargetVoc; }
 
     public String selectVocablePair(boolean source) {
         if (source) {

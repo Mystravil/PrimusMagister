@@ -1,6 +1,6 @@
 package com.elitedev.primusmagister;
 
-import java.awt.EventQueue;
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
-import java.awt.Font;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -37,6 +36,10 @@ public class gui extends JFrame {
 	//GUI elements which need to be global, so we gain access from functions/ earlier declared GUI-elements
 	private JLabel lblSrcLanguage;
 	private JLabel lblSrcWord;
+	//gen
+	private JLabel lblLastSrcWord;
+	private JLabel lblLastTarWord;
+	//
 	private JLabel lblTranslateLanguage;
 	private JLabel lblHeaderText;
 	private JLabel lblSkill;
@@ -62,7 +65,9 @@ public class gui extends JFrame {
 	private JTable table;
 
 	private ComConfig _comConfig = new ComConfig();
-	public String[] languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+	private String[] _languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+	private VocablePair _currentPair;
+
 
 	/**
 	 * Launch the application.
@@ -120,16 +125,19 @@ public class gui extends JFrame {
 					changeHeaderText();
 					// TODO main programm 
 					// TODO fill label srcWord
-					ComViewModel.setSourceVoc(spinnerLanguageLeft.getValue().toString());
-					ComViewModel.setSourceVoc(spinnerLanguageRight.getValue().toString());
+
+					ComViewModel.setSourceLang(spinnerLanguageLeft.getValue().toString());
+					ComViewModel.setTargetLang(spinnerLanguageRight.getValue().toString());
 
 					// Progressbar calculation
-//					progressBar.setMaximum(100);
-//					progressBar.setMinimum(0);
-//					progressBar.setValue();
+					progressBar.setMaximum(ComDatabase.getPairList(ComViewModel.getSourceLang(), ComViewModel.getTargetLang()).size() * 4);
+					progressBar.setMinimum(0);
+					progressBar.setValue(ComDatabase.getTotalSkillValue(ComViewModel.getSourceLang(), ComViewModel.getTargetLang()));
 
 					// new Voc
-
+					_currentPair = ComDatabase.getPairRandomLowestSkill(ComViewModel.getSourceLang(), ComViewModel.getTargetLang());
+					lblSrcWord.setText(_currentPair.voc1.name);
+					lblSkill.setText("Skill: " + _currentPair.skill_value);
 				}
 			}
 		});
@@ -160,7 +168,6 @@ public class gui extends JFrame {
 				showLearnMenu(true);
 				showMainMenu(false);
 				changeHeaderText();
-				// TODO fill language spinner
 			}
 		});
 		btnLearn.setBounds(302, 136, 330, 46);
@@ -186,7 +193,6 @@ public class gui extends JFrame {
 				showConfigLanguage(true);
 				showConfigMenu(false);
 				changeHeaderText();
-				//TODO fill language list
 			}
 		});
 		btnLanguage.setBounds(302, 136, 330, 46);
@@ -268,7 +274,7 @@ public class gui extends JFrame {
 		
 		listLanguage = new JList();
 		listLanguage.setModel(new AbstractListModel() {
-			String[] values = languageArray;
+			String[] values = _languageArray;
 			public int getSize() {
 				return values.length;
 			}
@@ -302,7 +308,7 @@ public class gui extends JFrame {
 		//-------------------------------------------------------------------------------
 		
 		spinnerLanguageLeft = new JSpinner();
-		spinnerLanguageLeft.setModel(new SpinnerListModel(languageArray));
+		spinnerLanguageLeft.setModel(new SpinnerListModel(_languageArray));
 		spinnerLanguageLeft.setBounds(216, 121, 141, 32);
 		spinnerLanguageLeft.setVisible(false);
 		contentPane.add(spinnerLanguageLeft);
@@ -310,7 +316,7 @@ public class gui extends JFrame {
 		//------------------------------------------------------------
 		
 		spinnerLanguageRight = new JSpinner();
-		spinnerLanguageRight.setModel(new SpinnerListModel(languageArray));
+		spinnerLanguageRight.setModel(new SpinnerListModel(_languageArray));
 		spinnerLanguageRight.setBounds(547, 121, 141, 32);
 		spinnerLanguageRight.setVisible(false);
 		contentPane.add(spinnerLanguageRight);
@@ -318,7 +324,7 @@ public class gui extends JFrame {
 		//------------------------------------------------------------
 		
 		spinnerLanguage = new JSpinner();
-		spinnerLanguage.setModel(new SpinnerListModel(languageArray));
+		spinnerLanguage.setModel(new SpinnerListModel(_languageArray));
 		spinnerLanguage.setBounds(387, 121, 141, 32);
 		spinnerLanguage.setVisible(false);
 		contentPane.add(spinnerLanguage);
@@ -361,6 +367,22 @@ public class gui extends JFrame {
 		lblSrcWord.setBounds(207, 242, 150, 32);
 		lblSrcWord.setVisible(false);
 		contentPane.add(lblSrcWord);
+
+		//------------------------------------------------------------
+
+		lblLastSrcWord = new JLabel("New label");
+		lblLastSrcWord.setHorizontalAlignment(SwingConstants.CENTER);
+		lblLastSrcWord.setBounds(207, 285, 150, 32);
+		lblLastSrcWord.setVisible(false);
+		contentPane.add(lblLastSrcWord);
+
+		//------------------------------------------------------------
+
+		lblLastTarWord = new JLabel("New label");
+		lblLastTarWord.setHorizontalAlignment(SwingConstants.CENTER);
+		lblLastTarWord.setBounds(581, 285, 150, 20);
+		lblLastTarWord.setVisible(false);
+		contentPane.add(lblLastTarWord);
 		
 		//------------------------------------------------------------
 		
@@ -392,6 +414,11 @@ public class gui extends JFrame {
 		//-------------------------------------------------------------------------------
 
 		textFieldTranslateWord = new JTextField();
+		textFieldTranslateWord.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				_submitEntry();
+			}
+		});
 		textFieldTranslateWord.setBounds(581, 248, 150, 20);
 		textFieldTranslateWord.setColumns(10);
 		textFieldTranslateWord.setVisible(false);
@@ -401,6 +428,32 @@ public class gui extends JFrame {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBounds(62, 130, 120, 124);
 		contentPane.add(table);
+	}
+
+	private void _submitEntry() {
+		if (textFieldTranslateWord.getText().equals(_currentPair.voc2.name)) {
+			ComDatabase.updateSkillvalue(ComViewModel.getSourceLang(), ComViewModel.getTargetLang(), _currentPair.id, _currentPair.skill_value + 1);
+			lblLastTarWord.setForeground(Color.green);
+		}
+		else {
+			ComDatabase.updateSkillvalue(ComViewModel.getSourceLang(), ComViewModel.getTargetLang(), _currentPair.id, 0);
+			lblLastTarWord.setForeground(Color.red);
+		}
+
+		// last voc
+		lblLastSrcWord.setText(_currentPair.voc1.name);
+		lblLastTarWord.setText(_currentPair.voc2.name);
+
+		// Progressbar calculation
+		progressBar.setMaximum(ComDatabase.getPairList(ComViewModel.getSourceLang(), ComViewModel.getTargetLang()).size() * 4);
+		progressBar.setMinimum(0);
+		progressBar.setValue(ComDatabase.getTotalSkillValue(ComViewModel.getSourceLang(), ComViewModel.getTargetLang()));
+
+		// new Voc
+		_currentPair = ComDatabase.getPairRandomLowestSkill(ComViewModel.getSourceLang(), ComViewModel.getTargetLang());
+		lblSrcWord.setText(_currentPair.voc1.name);
+		lblSkill.setText("Skill: " + _currentPair.skill_value);
+		textFieldTranslateWord.setText("");
 	}
 	
 	//------------------------------------------------------------------------------------------------------------------------------------------------
@@ -439,6 +492,8 @@ public class gui extends JFrame {
 		
 		lblSrcLanguage.setVisible(show);
 		lblSrcWord.setVisible(show);
+		lblLastSrcWord.setVisible(show);
+		lblLastTarWord.setVisible(show);
 		lblTranslateLanguage.setVisible(show);
 		textFieldTranslateWord.setVisible(show);
 		progressBar.setVisible(show);
@@ -555,7 +610,7 @@ public class gui extends JFrame {
 					JOptionPane.showMessageDialog(null, "Dieser Eintrag existiert bereits");
 				}
 				ComDatabase.createDictionaryTable(input.toLowerCase());
-				languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+				_languageArray = ComDatabase.getLanguages().toArray(new String[0]);
 				fullUpdateLanguages();
 			}
         break;
@@ -615,7 +670,7 @@ public class gui extends JFrame {
 				input = JOptionPane.showOptionDialog(null, "M�chten Sie die Sprache '" + selected + "' wirklich l�schen?", "Sprache l�schen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				if (input == 0) {
 					ComDatabase.deleteDictionaryTable(selected);
-					languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+					_languageArray = ComDatabase.getLanguages().toArray(new String[0]);
 					fullUpdateLanguages();
 				}
 			}
@@ -680,11 +735,11 @@ public class gui extends JFrame {
 	}
 
 	public void fullUpdateLanguages() {
-		spinnerLanguageLeft.setModel(new SpinnerListModel(languageArray));
-		spinnerLanguageRight.setModel(new SpinnerListModel(languageArray));
-		spinnerLanguage.setModel(new SpinnerListModel(languageArray));
+		spinnerLanguageLeft.setModel(new SpinnerListModel(_languageArray));
+		spinnerLanguageRight.setModel(new SpinnerListModel(_languageArray));
+		spinnerLanguage.setModel(new SpinnerListModel(_languageArray));
 		listLanguage.setModel(new AbstractListModel() {
-			String[] values = languageArray;
+			String[] values = _languageArray;
 			public int getSize() {
 				return values.length;
 			}
