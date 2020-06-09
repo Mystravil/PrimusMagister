@@ -454,4 +454,15 @@ public class ComDatabase {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void resetSkillvalue(String language1, String language2) {
+
+        String sql = "UPDATE t_vocable_pairs_" + language1 + "_" + language2 + " SET skill_value = 0";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
