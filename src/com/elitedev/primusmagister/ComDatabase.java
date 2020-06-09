@@ -316,6 +316,7 @@ public class ComDatabase {
                 vocablepair.vocId2 = rs.getInt("vocableID2");
                 vocablepair.voc1 = getVocable(vocablepair.language1, vocablepair.vocId1);
                 vocablepair.voc2 = getVocable(vocablepair.language2, vocablepair.vocId2);
+                vocablepair.skill_value = rs.getInt("skill_value");
             }
             return vocablepair;
         } catch (Exception e) {
