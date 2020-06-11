@@ -21,7 +21,6 @@ import javax.swing.AbstractListModel;
 import javax.swing.JProgressBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerListModel;
-import javax.swing.JTable;
 
 public class gui extends JFrame {
 
@@ -62,7 +61,6 @@ public class gui extends JFrame {
 	private JSpinner spinnerLanguage;
 	private JLabel lblHeaderSrcLanguage;
 	private JLabel lblHeaderDestLanguage;
-	private JTable table;
 
 	private ComConfig _comConfig = new ComConfig();
 	private String[] _languageArray = ComDatabase.getLanguages().toArray(new String[0]);
@@ -112,7 +110,7 @@ public class gui extends JFrame {
 		// fill JButtons with our data and set its position add functionality
 		//-------------------------------------------------------------------------------
 		
-		btnConfirm = new JButton("Auswahl bestätigen");
+		btnConfirm = new JButton("Auswahl best\u00E4tigen");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//check if its the starting window	
@@ -423,11 +421,6 @@ public class gui extends JFrame {
 		textFieldTranslateWord.setColumns(10);
 		textFieldTranslateWord.setVisible(false);
 		contentPane.add(textFieldTranslateWord);
-		
-		table = new JTable();
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setBounds(62, 130, 120, 124);
-		contentPane.add(table);
 	}
 
 	private void _submitEntry() {
@@ -533,7 +526,7 @@ public class gui extends JFrame {
 		btnLanguage.setVisible(show);
 		btnVocable.setVisible(show);
 		btnConnectVocable.setVisible(show);
-		btnQuit.setText("Zurück");
+		btnQuit.setText("Zur�ck");
 	}
 	
 	//------------------------------------------------------------------------------------------------------------------------------------------------
@@ -546,7 +539,7 @@ public class gui extends JFrame {
 		spinnerLanguageLeft.setVisible(show);
 		spinnerLanguageRight.setVisible(show);
 		btnConfirm.setVisible(show);
-		btnQuit.setText("Zurück");
+		btnQuit.setText("Zur�ck");
 		lblHeaderSrcLanguage.setVisible(show);
 		lblHeaderDestLanguage.setVisible(show);
 		
@@ -638,11 +631,11 @@ public class gui extends JFrame {
 				destWordSpinner.setModel(new SpinnerListModel(destWordList));
 
 				// contentlist of popup dialog
-				Object[] message = {"Quellwort", srcWordSpinner, "Übersetzung", destWordSpinner};
+				Object[] message = {"Quellwort", srcWordSpinner, "�bersetzung", destWordSpinner};
 
 				// popup call
 		        JOptionPane pane = new JOptionPane( message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-		        pane.createDialog(null, "Vokabelpaar hinzufügen").setVisible(true);
+		        pane.createDialog(null, "Vokabelpaar hinzuf�gen").setVisible(true);
 		        
 		        // get values
 		        // TODO validate and write into DB
@@ -667,7 +660,7 @@ public class gui extends JFrame {
 		case "configLanguage":
 			if (listLanguage.getSelectedValue() != null) {
 				selected = (String) listLanguage.getSelectedValue();
-				input = JOptionPane.showOptionDialog(null, "Möchten Sie die Sprache '" + selected + "' wirklich löschen?", "Sprache löschen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+				input = JOptionPane.showOptionDialog(null, "M�chten Sie die Sprache '" + selected + "' wirklich l�schen?", "Sprache l�schen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				if (input == 0) {
 					ComDatabase.deleteDictionaryTable(selected);
 					_languageArray = ComDatabase.getLanguages().toArray(new String[0]);
@@ -675,28 +668,28 @@ public class gui extends JFrame {
 				}
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "Keine Sprache ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Keine Sprache ausgew�hlt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 			}
 			break;
 	
 		case "configVocable":
 			if (listVocable.getSelectedValue() != null) {
 				selected = (String) listVocable.getSelectedValue();
-				input = JOptionPane.showOptionDialog(null, "Möchten Sie die Vokabel '" +selected+"' wirklich löschen?", "Vokabel löschen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+				input = JOptionPane.showOptionDialog(null, "M�chten Sie die Vokabel '" +selected+"' wirklich l�schen?", "Vokabel l�schen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "Keine Vokabel ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Keine Vokabel ausgew�hlt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 			}
 			break;
 		
 		case "configConnectVocable":
 			if (listVocable.getSelectedValue() != null) {
 				String voc = (String) listVocable.getSelectedValue();
-				input = JOptionPane.showOptionDialog(null, "Möchten Sie die Übersetzung '" +voc + "' wirklich löschen?", "Übersetzung löschen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
-				// TODO validieren, dass eingabe eine existierende Übersetzung ist
+				input = JOptionPane.showOptionDialog(null, "M�chten Sie die �bersetzung '" +voc + "' wirklich l�schen?", "�bersetzung l�schen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+				// TODO validieren, dass eingabe eine existierende �bersetzung ist
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "Keine gültige Übersetzung ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Keine g�ltige �bersetzung ausgew�hlt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 			}
 			break;
         
@@ -715,20 +708,20 @@ public class gui extends JFrame {
 			case "configLanguage":
 				if (listLanguage.getSelectedValue() != null) {
 					selected = (String) listLanguage.getSelectedValue();
-					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Sprache ändern", JOptionPane.PLAIN_MESSAGE);
+					input = JOptionPane.showInputDialog(null, "Geben Sie ihre �nderung ein", "Sprache �ndern", JOptionPane.PLAIN_MESSAGE);
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Keine Sprache ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Keine Sprache ausgew�hlt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
 		
 			case "configVocable":
 				if (listVocable.getSelectedValue() != null) {
 					selected = (String) listVocable.getSelectedValue();
-					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Vokabel ändern", JOptionPane.PLAIN_MESSAGE);
+					input = JOptionPane.showInputDialog(null, "Geben Sie ihre �nderung ein", "Vokabel �ndern", JOptionPane.PLAIN_MESSAGE);
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Keine Vokabel ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Keine Vokabel ausgew�hlt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
 			}	
@@ -819,7 +812,7 @@ public class gui extends JFrame {
 			break;
 			
 		case "learnMenu":
-			lblHeaderText.setText("Sprache auswählen");
+			lblHeaderText.setText("Sprache ausw�hlen");
 			break;
 			
 		case "learn":
@@ -835,7 +828,7 @@ public class gui extends JFrame {
 			break;
 			
 		case "configConnectVocable":
-			lblHeaderText.setText("Übersetzungen bearbeiten");
+			lblHeaderText.setText("�bersetzungen bearbeiten");
 			break;
 		}
 	}
