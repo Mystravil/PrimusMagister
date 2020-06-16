@@ -642,14 +642,11 @@ public class gui extends JFrame {
 			}
 			else {
 				// declaration of components needed by popup
-				// TODO Validierung
 				JSpinner srcWordSpinner = new JSpinner();
-				//TODO Vokabeln aus der DB holen
 				String[] srcWordList = {"Baum", "Apfel", "Tee"};
 				srcWordSpinner.setModel(new SpinnerListModel(srcWordList));
 				
 				JSpinner destWordSpinner = new JSpinner();
-				//TODO Vokabeln aus der DB holen
 				String[] destWordList = {"Tree", "Apple", "Tea"};
 				destWordSpinner.setModel(new SpinnerListModel(destWordList));
 
@@ -661,7 +658,6 @@ public class gui extends JFrame {
 		        pane.createDialog(null, "Vokabelpaar hinzufügen").setVisible(true);
 		        
 		        // get values
-		        // TODO validate and write into DB
 		        String srcWord = srcWordSpinner.getValue().toString();
 		        String destWord = destWordSpinner.getValue().toString();
 			}
@@ -713,7 +709,6 @@ public class gui extends JFrame {
 			if (listVocable.getSelectedValue() != null) {
 				String voc = (String) listVocable.getSelectedValue();
 				input = JOptionPane.showOptionDialog(null, "Möchten Sie die übersetzung '" +voc + "' wirklich löschen?", "übersetzung löschen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
-				// TODO validieren, dass eingabe eine existierende übersetzung ist
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Keine gültige übersetzung ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
@@ -751,8 +746,8 @@ public class gui extends JFrame {
 				if (listVocable.getSelectedValue() != null) {
 					selected = (String) listVocable.getSelectedValue();
 					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Vokabel ändern", JOptionPane.PLAIN_MESSAGE);
-					ComDatabase.updateVocable(spinnerLanguage.getValue().toString(), selected, input);
-					fullUpdateVocables();
+						ComDatabase.updateVocable(spinnerLanguage.getValue().toString(), selected, input);
+						fullUpdateVocables();
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Keine Vokabel ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
