@@ -3,26 +3,13 @@ package com.elitedev.primusmagister;
 // comment for christian because he cant merge
 import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractListModel;
-import javax.swing.JProgressBar;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerListModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -57,6 +44,7 @@ public class gui extends JFrame {
 	private JButton btnAdd;
 	private JButton btnDel;
 	private JButton btnEdit;
+	private JButton btnResetSkill;
 	private JList listLanguage;
 	private JList listVocable;
 	private JSpinner spinnerLanguageLeft;
@@ -145,9 +133,22 @@ public class gui extends JFrame {
 				}
 			}
 		});
+
 		btnConfirm.setBounds(581, 294, 150, 32);
 		contentPane.add(btnConfirm);
 		btnConfirm.setVisible(false);
+
+		//------------------------------------------------------------
+
+		btnResetSkill = new JButton("Skill zurücksetzen");
+		btnResetSkill.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ComDatabase.resetSkillvalue(spinnerLanguageLeft.getValue().toString(), spinnerLanguageRight.getValue().toString());
+			}
+		});
+		btnResetSkill.setBounds(175, 294, 150, 32);
+		contentPane.add(btnResetSkill);
+		btnResetSkill.setVisible(false);
 		
 		//------------------------------------------------------------
 		
@@ -327,17 +328,8 @@ public class gui extends JFrame {
 
 		listVocable = new JList();
 
-		List<Vocable> _vocableArrayPart = ComDatabase.getVocableList(spinnerLanguage.getValue().toString());
-		ArrayList<String> _vocableArrayList = new ArrayList<String>();
-
-		for(Vocable voc : _vocableArrayPart) {
-			_vocableArrayList.add(voc.name);
-		}
-
-		String[] _vocableArray = _vocableArrayList.toArray(new String[0]);
-
 		listVocable.setModel(new AbstractListModel() {
-			String[] values = _vocableArray;
+			String[] values =  {};
 			public int getSize() {
 				return values.length;
 			}
@@ -374,7 +366,7 @@ public class gui extends JFrame {
 		
 		//------------------------------------------------------------
 		
-		lblSrcLanguage = new JLabel("New label");
+		lblSrcLanguage = new JLabel("");
 		lblSrcLanguage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSrcLanguage.setBounds(207, 193, 150, 32);
 		lblSrcLanguage.setVisible(false);
@@ -382,7 +374,7 @@ public class gui extends JFrame {
 		
 		//------------------------------------------------------------
 		
-		lblSrcWord = new JLabel("New label");
+		lblSrcWord = new JLabel("");
 		lblSrcWord.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSrcWord.setBounds(207, 242, 150, 32);
 		lblSrcWord.setVisible(false);
@@ -390,7 +382,7 @@ public class gui extends JFrame {
 
 		//------------------------------------------------------------
 
-		lblLastSrcWord = new JLabel("New label");
+		lblLastSrcWord = new JLabel("");
 		lblLastSrcWord.setHorizontalAlignment(SwingConstants.CENTER);
 		lblLastSrcWord.setBounds(207, 285, 150, 32);
 		lblLastSrcWord.setVisible(false);
@@ -398,7 +390,7 @@ public class gui extends JFrame {
 
 		//------------------------------------------------------------
 
-		lblLastTarWord = new JLabel("New label");
+		lblLastTarWord = new JLabel("");
 		lblLastTarWord.setHorizontalAlignment(SwingConstants.CENTER);
 		lblLastTarWord.setBounds(581, 285, 150, 20);
 		lblLastTarWord.setVisible(false);
@@ -406,7 +398,7 @@ public class gui extends JFrame {
 		
 		//------------------------------------------------------------
 		
-		lblTranslateLanguage = new JLabel("New label");
+		lblTranslateLanguage = new JLabel("");
 		lblTranslateLanguage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTranslateLanguage.setBounds(581, 189, 150, 41);
 		lblTranslateLanguage.setVisible(false);
@@ -561,6 +553,7 @@ public class gui extends JFrame {
 		spinnerLanguageLeft.setVisible(show);
 		spinnerLanguageRight.setVisible(show);
 		btnConfirm.setVisible(show);
+		btnResetSkill.setVisible(show);
 		btnQuit.setText("Zurück");
 		lblHeaderSrcLanguage.setVisible(show);
 		lblHeaderDestLanguage.setVisible(show);
@@ -576,7 +569,7 @@ public class gui extends JFrame {
 	public void showConfigLanguage(boolean show){
 		btnAdd.setVisible(show);
 		btnDel.setVisible(show);
-		btnEdit.setVisible(show);
+//		btnEdit.setVisible(show);
 		listLanguage.setVisible(show);
 	}
 	
@@ -587,6 +580,8 @@ public class gui extends JFrame {
 	//------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	public void showConfigVocable(boolean show){
+		fullUpdateVocables();
+
 		btnAdd.setVisible(show);
 		btnDel.setVisible(show);
 		btnEdit.setVisible(show);
@@ -601,6 +596,8 @@ public class gui extends JFrame {
 	//------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	public void showConfigConnectVocable(boolean show){
+		fullUpdateVocablePairs();
+
 		spinnerLanguageRight.setVisible(show);
 		spinnerLanguageLeft.setVisible(show);
 		btnAdd.setVisible(show);
@@ -733,7 +730,7 @@ public class gui extends JFrame {
 	public void edit(){
 		String input;
 		String selected;
-		
+
 		switch (menu_) {
 			case "configLanguage":
 				if (listLanguage.getSelectedValue() != null) {
@@ -749,18 +746,20 @@ public class gui extends JFrame {
 					JOptionPane.showMessageDialog(null, "Keine Sprache ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
-		
+
 			case "configVocable":
 				if (listVocable.getSelectedValue() != null) {
 					selected = (String) listVocable.getSelectedValue();
 					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Vokabel ändern", JOptionPane.PLAIN_MESSAGE);
+					ComDatabase.updateVocable(spinnerLanguage.getValue().toString(), selected, input);
+					fullUpdateVocables();
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Keine Vokabel ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
-			}	
-	}
+				}
+			}
 
 	public void fullUpdateLanguages() {
 		spinnerLanguageLeft.setModel(new SpinnerListModel(_languageArray));
@@ -789,6 +788,28 @@ public class gui extends JFrame {
 
 		listVocable.setModel(new AbstractListModel() {
 			String[] values = _vocableArray;
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+	}
+
+	public void fullUpdateVocablePairs() {
+//		List<VocablePair> _vocablePairArrayPart = ComDatabase.getPairList(spinnerLanguageLeft.getValue().toString(), spinnerLanguageRight.getValue().toString());
+		List<VocablePair> _vocablePairArrayPart = ComDatabase.getPairList("german", "english");
+		ArrayList<String> _vocablePairArrayList = new ArrayList<String>();
+
+		for(VocablePair voc : _vocablePairArrayPart) {
+			_vocablePairArrayList.add(voc.voc1.name + " - " + voc.voc2.name);
+		}
+
+		String[] _vocablePairArray = _vocablePairArrayList.toArray(new String[0]);
+
+		listVocable.setModel(new AbstractListModel() {
+			String[] values = _vocablePairArray;
 			public int getSize() {
 				return values.length;
 			}
