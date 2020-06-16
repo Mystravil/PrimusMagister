@@ -71,7 +71,9 @@ public class ComDatabase {
         deleteDefaultData();
         createDictionaryTable("german");
         createDictionaryTable("english");
+        createDictionaryTable("french");
         createPairTable("german", "english");
+        createPairTable("german", "french");
         addVocable("german", "Baum");
         addVocable("german", "Auto");
         addVocable("german", "Straße");
@@ -108,6 +110,25 @@ public class ComDatabase {
         for (int i = 4; i < 16; i++) {
             addPair("german", "english", i, i);
         }
+
+        addVocable("french", "arbre");
+        addVocable("french", "voiture");
+        addVocable("french", "route");
+        addVocable("french", "s'asseoir");
+        addVocable("french", "magnifique");
+        addVocable("french", "jeter");
+        addVocable("french", "Payer");
+        addVocable("french", "terre");
+        addVocable("french", "danser");
+        addVocable("french", "nu");
+        addVocable("french", "soulever");
+        addVocable("french", "le plus grand");
+        addVocable("french", "le bruit");
+        addVocable("french", "retirer");
+        addVocable("french", "se lever");
+        for (int i = 1; i < 16; i++) {
+            addPair("german", "french", i, i);
+        }
     }
 
     /**
@@ -116,7 +137,9 @@ public class ComDatabase {
     public static void deleteDefaultData() {
         executeSQL("DROP TABLE IF EXISTS t_dictionary_german;");
         executeSQL("DROP TABLE IF EXISTS t_dictionary_english;");
+        executeSQL("DROP TABLE IF EXISTS t_dictionary_french;");
         executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_german_english;");
+        executeSQL("DROP TABLE IF EXISTS t_vocable_pairs_german_french;");
     }
 
     public static ArrayList<String> getLanguages() {
