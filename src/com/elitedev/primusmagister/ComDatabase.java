@@ -295,7 +295,7 @@ public class ComDatabase {
     public static void deleteVocable(String language, String vocable) {
         language = language.toLowerCase();
 
-        String sql = "DELETE FROM t_dictionary_" + language + " WHERE rowid = ?";
+        String sql = "DELETE FROM t_dictionary_" + language + " WHERE name = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, vocable);
