@@ -18,10 +18,13 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JProgressBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerListModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class gui extends JFrame {
 
@@ -65,6 +68,8 @@ public class gui extends JFrame {
 
 	private ComConfig _comConfig = new ComConfig();
 	private String[] _languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+
+
 	private VocablePair _currentPair;
 
 
@@ -286,22 +291,6 @@ public class gui extends JFrame {
 		listLanguage.setVisible(false);
 		contentPane.add(listLanguage);
 		
-		//------------------------------------------------------------
-		
-		listVocable = new JList();
-		listVocable.setModel(new AbstractListModel() {
-			String[] values = new String[] {"a", "b", "c"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
-		listVocable.setBounds(272, 156, 360, 193);
-		listVocable.setVisible(false);
-		contentPane.add(listVocable);
-		
 		//-------------------------------------------------------------------------------
 		// fill JSpinner with our data and set its position
 		//-------------------------------------------------------------------------------
@@ -323,11 +312,43 @@ public class gui extends JFrame {
 		//------------------------------------------------------------
 		
 		spinnerLanguage = new JSpinner();
+		spinnerLanguage.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				fullUpdateVocables();
+			}
+		});
 		spinnerLanguage.setModel(new SpinnerListModel(_languageArray));
 		spinnerLanguage.setBounds(387, 121, 141, 32);
 		spinnerLanguage.setVisible(false);
 		contentPane.add(spinnerLanguage);
-		
+
+		//------------------------------------------------------------
+
+		listVocable = new JList();
+
+		List<Vocable> _vocableArrayPart = ComDatabase.getVocableList(spinnerLanguage.getValue().toString());
+		ArrayList<String> _vocableArrayList = new ArrayList<String>();
+
+		for(Vocable voc : _vocableArrayPart) {
+			_vocableArrayList.add(voc.name);
+		}
+
+		String[] _vocableArray = _vocableArrayList.toArray(new String[0]);
+
+		listVocable.setModel(new AbstractListModel() {
+			String[] values = _vocableArray;
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		listVocable.setBounds(272, 156, 360, 193);
+		listVocable.setVisible(false);
+		contentPane.add(listVocable);
+
 		//-------------------------------------------------------------------------------
 		// fill JLabels with our data and set its position
 		//-------------------------------------------------------------------------------
@@ -611,6 +632,10 @@ public class gui extends JFrame {
 		
 		case "configVocable":
 			input = JOptionPane.showInputDialog(null, "Geben Sie eine Vokabel ein", "Vokabeleingabe", JOptionPane.PLAIN_MESSAGE);
+			if (JOptionPane.OK_OPTION == 0) {
+				ComDatabase.addVocable(spinnerLanguage.getValue().toString(), input);
+				fullUpdateVocables();
+			}
         break;
 		
 		case "configConnectVocable":
@@ -677,6 +702,10 @@ public class gui extends JFrame {
 			if (listVocable.getSelectedValue() != null) {
 				selected = (String) listVocable.getSelectedValue();
 				input = JOptionPane.showOptionDialog(null, "Möchten Sie die Vokabel '" +selected+"' wirklich löschen?", "Vokabel löschen", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+				if (input == 0) {
+					ComDatabase.deleteVocable(spinnerLanguage.getValue().toString(), selected);
+				}
+				fullUpdateVocables();
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Keine Vokabel ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
@@ -709,7 +738,12 @@ public class gui extends JFrame {
 			case "configLanguage":
 				if (listLanguage.getSelectedValue() != null) {
 					selected = (String) listLanguage.getSelectedValue();
-					input = JOptionPane.showInputDialog(null, "Geben Sie ihre ünderung ein", "Sprache ändern", JOptionPane.PLAIN_MESSAGE);
+					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Sprache ändern", JOptionPane.PLAIN_MESSAGE);
+//					if (input == 0) {
+//						ComDatabase.deleteDictionaryTable(selected);
+//						_languageArray = ComDatabase.getLanguages().toArray(new String[0]);
+//						fullUpdateLanguages();
+//					}
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Keine Sprache ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
@@ -719,7 +753,7 @@ public class gui extends JFrame {
 			case "configVocable":
 				if (listVocable.getSelectedValue() != null) {
 					selected = (String) listVocable.getSelectedValue();
-					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Vokabel ündern", JOptionPane.PLAIN_MESSAGE);
+					input = JOptionPane.showInputDialog(null, "Geben Sie ihre Änderung ein", "Vokabel ändern", JOptionPane.PLAIN_MESSAGE);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Keine Vokabel ausgewählt!", "Fehlermeldung", JOptionPane.ERROR_MESSAGE);
@@ -734,6 +768,27 @@ public class gui extends JFrame {
 		spinnerLanguage.setModel(new SpinnerListModel(_languageArray));
 		listLanguage.setModel(new AbstractListModel() {
 			String[] values = _languageArray;
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+	}
+
+	public void fullUpdateVocables() {
+		List<Vocable> _vocableArrayPart = ComDatabase.getVocableList(spinnerLanguage.getValue().toString());
+		ArrayList<String> _vocableArrayList = new ArrayList<String>();
+
+		for(Vocable voc : _vocableArrayPart) {
+			_vocableArrayList.add(voc.name);
+		}
+
+		String[] _vocableArray = _vocableArrayList.toArray(new String[0]);
+
+		listVocable.setModel(new AbstractListModel() {
+			String[] values = _vocableArray;
 			public int getSize() {
 				return values.length;
 			}
