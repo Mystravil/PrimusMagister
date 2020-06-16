@@ -275,7 +275,7 @@ public class ComDatabase {
     public static void updateVocable(String language, String vocable, String newVocable) {
         language = language.toLowerCase();
 
-        String sql = "UPDATE t_dictionary_" + language + " SET name = ? WHERE name = ?";
+        String sql = "UPDATE t_dictionary_" + language + " SET name = \"?\" WHERE name = \"?\"";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, newVocable);
